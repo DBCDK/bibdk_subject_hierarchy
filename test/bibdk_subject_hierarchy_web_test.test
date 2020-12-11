@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ * DrupalWebTest for Bibliotek.dk Subject Hierarchy
+ */
+
+
 class BibdkSubjectHierarchyWebTestCase extends DrupalWebTestCase {
 
   protected $privileged_user;
@@ -14,7 +20,7 @@ class BibdkSubjectHierarchyWebTestCase extends DrupalWebTestCase {
 
   public function setUp() {
     // $this->profile = 'minimal';
-    parent::setUp('bibdk_subject_hierarchy');
+    parent::setUp('bibdk_subject_hierarchy', 'bibdk_yaz');
     user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array(
       'access content',
       'search content'

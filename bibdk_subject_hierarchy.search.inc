@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ * Bibdk subject hierarchy search functions
+ */
+
+
 /** Get searchresult from subject hierarchy
  *
  * @param $hierarchy
@@ -23,14 +29,15 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
     $items = array();
     foreach ($group_elements as $element) {
       $result['number_of_results']++;
-      $items[] = drupal_render(_get_bibdk_subject_hierarchy_searchresult_item($hierarchy, $element, $path));
+      $search_result = _get_bibdk_subject_hierarchy_searchresult_item($hierarchy, $element, $path);
+      $items[] = drupal_render($search_result);
     }
 
     $group_items = array(
       'breadcrumb' => array(
         '#type' => 'container',
         '#attributes' => array(
-          'class' => array('themes__breadcrumb'),
+          'class' => array('subjects-breadcrumb'),
         ),
         'items' => $breadcrumb,
       ),
@@ -38,7 +45,7 @@ function _get_bibdk_subject_hierarchy_searchresult($term) {
         '#theme' => 'item_list',
         '#items' => $items,
         '#attributes' => array(
-          'class' => 'themes__sublist',
+          'class' => 'subjects-sublist',
         ),
       )
     );
@@ -66,7 +73,7 @@ function _get_bibdk_subject_hierarchy_searchresult_index($hierarchy, $searchterm
     $current_level_index[] = $key;
 
     // if item contains $searchterm
-    if (isset($item['ord']) && strripos($item['ord'], $searchterm) !== false) {
+    if ( isset($item['ord']) && mb_strripos($item['ord'], $searchterm) !== FALSE ) {
       $hierarchy_level_index_string = implode(',', $hierarchy_level_index);
       $current_level_index_string = implode(',', $current_level_index);
       $results[$hierarchy_level_index_string][] = $current_level_index_string;
@@ -110,9 +117,13 @@ function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path)
   if (empty($item)) {
     return array();
   }
+  $search_path_tmp = _bibdk_subject_hierarchy_search_info();
+  $search_path = (!empty($search_path_tmp)) ? $search_path_tmp : 'work'; // default value aht. unit test
+  $query = '';
 
   if (!empty($item['cql']) && empty($item['term'])) {
-    $url = 'search/' . $path . '/' . trim($item['cql']);
+    $url = 'search/' . $search_path;
+    $query = array('search_block_form' => trim($item['cql']));
     $class = array();
   }
   else {
@@ -127,11 +138,12 @@ function _get_bibdk_subject_hierarchy_searchresult_item_link($item, $key, $path)
       'attributes' => array(
         'class' => $class,
       ),
-      'html' => false,
+      'query' => $query,
+      'fragment' => 'content',
+      'html' => FALSE,
     ),
   );
   return $link;
-
 }
 
 
@@ -144,7 +156,8 @@ function bibdk_subject_hierarchy_searchfield_form($form, &$form_state) {
     '#type' => 'textfield',
     '#attributes' => array(
       'class' => array('searchfield-input'),
-      'placeholder' => t('search in subject hierarchy'),
+      'placeholder' => t('search in subject hierarchy', array(), array('context' => 'bibdk_subject_hierarchy')),
+      'aria-label' => t('Search subject hierarchy', array(), array('context' => 'bibdk_subject_hierarchy')),
     ),
   );
 
@@ -189,16 +202,18 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
   );
 
   $header['close'] = array(
-    '#theme' => 'link',
-    '#path' => '',
-    '#text' => '&nbsp;',
+    '#theme' => 'link_with_svg',
+    '#text' => '',
+    '#path' => FALSE,
     '#options' => array(
       'attributes' => array(
-        'class' => array('themes__close-button close icon icon-blue-x'),
+        'alt' => t('close subject hierarchy submenu.', array(), array('context' => 'bibdk_subject_hierarchy')),
+        'class' => array('subjects-close-button close icon'),
       ),
-      'html' => true,
     ),
+    '#svg' => 'svg-close',
   );
+
 
   $header['headline'] = array(
     '#theme' => 'html_tag',
@@ -221,7 +236,7 @@ function bibdk_subject_hierarchy_searchfield_form_submit($form, &$form_state) {
     '#type' => 'container',
     '#attributes' => array(
       'id' => array('bibdk-subject-hierarchy-searchresult'),
-      'class' => array('bibdk-subject-hierarchy-searchresult', 'themes__sublists'),
+      'class' => array('bibdk-subject-hierarchy-searchresult', 'subjects-sublists'),
     ),
     'header' => $header,
     'result' => $searchresult['result'],
@@ -249,19 +264,26 @@ function bibdk_subject_hierarchy_searchfield_custom_search($term) {
   $params['numResults'] = 0;
   $params['objectFormat'] = 'DKABM';
   $params['collectionType'] = 'work';
-  $params['query'] = $term;
-
+  $params['query'] = '"' . $term . '"';
   $client = new ting_client_class();
   $opensearch_result = $client->do_request('search', $params);
 
   $return['result']['#markup'] = t('A search on %term gives %results results', array('%term' => $term, '%results' => $opensearch_result->numTotalObjects)) . ' ';
+
+  $search_path = 'search/' .  _bibdk_subject_hierarchy_search_info();
   $return['link'] = array(
     '#theme' => 'link',
-    '#path' => 'search/work/' . $term,
+    '#path' => $search_path,
     '#text' => t('Show result'),
     '#options' => array(
-      'attributes' => array(),
-      'html' => false,
+      'attributes' => array(
+        'class' => array(),
+      ),
+      'query' => array(
+        'search_block_form' => trim($params['query']),
+      ),
+      'fragment' => 'content',
+      'html' => FALSE,
     ),
   );
 

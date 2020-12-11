@@ -75,3 +75,79 @@ function bibdk_subject_hierarchy_update_7009(&$sandbox) {
   _update_bibdk_subject_hierarchy();
 }
 
+/**
+ * update hierarchy sprint 43 2014
+ */
+function bibdk_subject_hierarchy_update_7010(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy november 2015
+ */
+function bibdk_subject_hierarchy_update_7011(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy november 2016
+ */
+function bibdk_subject_hierarchy_update_7012(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy november 2016, update 2
+ */
+function bibdk_subject_hierarchy_update_7013(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy IT-sprint 2017: Export fra emnehierarki.dbc.dk som CQL
+ */
+function bibdk_subject_hierarchy_update_7014(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy january 2018
+ */
+function bibdk_subject_hierarchy_update_7015(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy january 2019
+ */
+function bibdk_subject_hierarchy_update_7016(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy november 2019
+ */
+function bibdk_subject_hierarchy_update_7017(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy december 2019
+ */
+function bibdk_subject_hierarchy_update_7018(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy december 2019.2
+ */
+function bibdk_subject_hierarchy_update_7019(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
+
+/**
+ * update hierarchy oktober 2020
+ */
+function bibdk_subject_hierarchy_update_7020(&$sandbox) {
+  _update_bibdk_subject_hierarchy();
+}
